@@ -1,0 +1,31 @@
+.chat-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 15px;
+}
+
+.chat-entry-profile-img {
+    flex: 0;
+}
+
+.chat-entry-profile-img img {
+    object-fit: fill;
+    height: 50px;
+    width: 50px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.chat-entry-details {
+    margin-left: 15px;
+    flex: 3;
+}
+
+.chat-entry-details h3 {
+    margin: 2px;
+}
+
+.chat-entry-details p {
+    margin: 2px;
+}

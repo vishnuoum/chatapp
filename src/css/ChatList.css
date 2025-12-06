@@ -1,0 +1,40 @@
+.chat-list {
+    flex: 3;
+    border-right: 1px solid rgb(116, 116, 116);
+    max-height: 100vh;
+    background-color: #212529;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-list nav {
+    flex: 0 0 auto;
+    font-weight: bold;
+}
+
+.chat-listing {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+
+.chat-list-search {
+    width: auto;
+    margin: 10px 20px;
+    box-sizing: border-box;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 100px;
+    background-color: #5d5e5f;
+    border: none;
+}
+
+.chat-list-search::placeholder {
+    color: #d9dbdd;
+}
+
+.chat-entries {
+    overflow-y: scroll;
+}
