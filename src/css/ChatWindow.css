@@ -14,6 +14,9 @@
 .chat-msg-window {
     flex-grow: 1;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 0px 5px;
 }
 
 .chat-text-area {
