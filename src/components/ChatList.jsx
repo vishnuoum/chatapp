@@ -10,7 +10,7 @@ function ChatList() {
 
     const handleNewChat = () => {
         let receiverId = prompt("Enter receiver ID")
-        addToChatListing({ "chatId": receiverId, "lastMsg": "", "time": "" })
+        addToChatListing({ "chat_id": receiverId, "last_message": "....", "last_datetime": new Date().toISOString() })
     }
 
 
@@ -25,7 +25,10 @@ function ChatList() {
                 <div className="chat-listing">
                     <input type="text" placeholder="&#x1F50E;&#xFE0E;    Search Chats" value={searchQuery} className="chat-list-search" id="chat-list-search" onChange={(e) => setSearchQuery(e.target.value)} />
                     <div className="chat-entries">
-                        {chatListing && chatListing.length === 0 ? <center>no messages</center> : chatListing.filter(listing => listing["chatId"]?.startsWith(searchQuery)).map(list => <ChatEntry chat={list} />)}
+                        {chatListing && chatListing.length === 0 ? <center>no messages</center> : chatListing.filter(listing => {
+                            const title = listing["title"] ? listing["title"] : String(listing["chat_id"])
+                            return title.startsWith(searchQuery) || String(listing["chat_id"]).startsWith(searchQuery)
+                        }).map(list => <ChatEntry chat={list} />)}
                     </div>
                 </div>
             </div>

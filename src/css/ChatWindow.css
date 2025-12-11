@@ -40,6 +40,7 @@
     background-color: #5d5e5f;
     border: none;
     margin-right: 10px;
+    color: white;
 }
 
 .chat-text-area input[type=text]::placeholder {

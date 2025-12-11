@@ -7,20 +7,20 @@ function ChatWindow() {
 
     const [textMessage, setTextMessage] = useState("")
 
-    const { messages, addToMessage, chatId } = useChatContext();
+    const { messages, title, userId, addToMessage, chatId } = useChatContext();
 
     const sendMessage = (e) => {
         console.log(textMessage);
-        (textMessage && textMessage.trim() !== "") && addToMessage({ "id": 1, "sender": "You", "time": "20:21", "text": textMessage, "type": "send" }, chatId)
+        (textMessage && textMessage.trim() !== "") && addToMessage({ "id": 1, "sender_id": userId, "datetime": new Date().toISOString(), "text": textMessage }, chatId)
         setTextMessage("")
     }
 
     return (
         <div className="chat-window">{
-            chatId == -1 ? <center>Tap any sender to start sending messages</center> :
+            !chatId ? <center>Tap any sender to start sending messages</center> :
                 <>
                     <nav className="navbar">
-                        <div className='navbar-brand'>{chatId}</div>
+                        <div className='navbar-brand'>{title}</div>
                     </nav>
                     <div className="chat-msg-window">
                         {messages[chatId]?.map(message => <ChatBubble message={message} />)}

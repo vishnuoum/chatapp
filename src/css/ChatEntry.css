@@ -21,6 +21,7 @@
 .chat-entry-details {
     margin-left: 15px;
     flex: 3;
+    min-width: 0;
 }
 
 .chat-entry-details h3 {
@@ -29,9 +30,40 @@
 
 .chat-entry-details p {
     margin: 2px;
+    flex-grow: 0;
+    max-width: 250px;
+    min-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    max-lines: 1;
+    text-overflow: ellipsis;
+    min-width: 0;
+    padding-right: 10px;
 }
+
 
 .chat-entry:hover {
     background-color: rgb(121, 121, 121);
     border-radius: 10px;
+}
+
+.chat-time {
+    flex: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.chat-time span {
+    margin: 2px;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+
+    /* Styles for screens 768px wide or less (e.g., tablets/mobiles) */
+    .chat-entry-details p {
+        width: 200px;
+        /* Change width to full for smaller screens */
+    }
 }
