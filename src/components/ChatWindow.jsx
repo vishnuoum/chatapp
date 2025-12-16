@@ -1,19 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../css/ChatWindow.css"
 import ChatBubble from "./ChatBubble";
 import { useChatContext } from "../contexts/ChatContext";
+import { fetchHistory } from "../services/api";
 
 function ChatWindow() {
 
     const [textMessage, setTextMessage] = useState("")
 
-    const { messages, title, userId, addToMessage, chatId } = useChatContext();
+    const { messages, title, userId, groupId, addToMessage, chatId, setMessages } = useChatContext();
 
     const sendMessage = (e) => {
         console.log(textMessage);
         (textMessage && textMessage.trim() !== "") && addToMessage({ "id": 1, "sender_id": userId, "datetime": new Date().toISOString(), "text": textMessage }, chatId)
         setTextMessage("")
     }
+
+
+    useEffect(() => {
+        if (!chatId || messages[chatId]) return;
+
+        const loadMessages = async () => {
+            const history = await fetchHistory(userId, chatId, groupId);
+
+            setMessages(prev => ({
+                ...prev,
+                [chatId]: history
+            }));
+        };
+
+        loadMessages();
+    }, [chatId]);
 
     return (
         <div className="chat-window">{

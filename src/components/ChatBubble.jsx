@@ -15,6 +15,8 @@ function ChatBubble({ message }) {
 
 
 
+
+
     return (
         <div className={"chat-bubble" + (message.sender_id === userId ? " right" : " left")}>
             <span className="msg-sender">{message.sender_id === userId ? "You" : message.sender_id}</span>

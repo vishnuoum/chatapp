@@ -49,3 +49,20 @@ export const getUsername = async (phone) => {
         console.error(e);
     }
 }
+
+export const fetchHistory = async (user_id, chat_id, group_id) => {
+    try {
+        const response = await fetch(`${BASE_URL}/getMessages`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ user_id: user_id, chat_id: chat_id, group_id: group_id })
+        })
+        const resBody = await response.json()
+        return resBody
+    } catch (e) {
+        console.log("Error while getUsername")
+        return []
+    }
+}

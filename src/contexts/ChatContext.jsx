@@ -11,13 +11,24 @@ export const ChatProvider = ({ children }) => {
     const [title, setTitle] = useState(null);
     const [groupId, setGroupId] = useState(null);
     const [chatListing, setChatListing] = useState([]);
-    const [userId, setUserId] = useState(null);
+    const [userId, setUserId] = useState(() => {
+        // 👇 initialize state from storage
+        return parseInt(localStorage.getItem("userId"));
+    });
     const [usernameMap, setUsernameMap] = useState({});
 
     // keep socket in a ref to avoid stale closures and re-renders
     const socketRef = useRef(null);
 
     const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
+
+    useEffect(() => {
+        if (userId) {
+            localStorage.setItem("userId", userId);
+        } else {
+            localStorage.removeItem("userId");
+        }
+    }, [userId]);
 
 
     const addToChatListing = useCallback((chat) => {
@@ -187,7 +198,7 @@ export const ChatProvider = ({ children }) => {
     }
 
     const value = {
-        messages, chatListing, chatId, title, addToMessage, addToChatListing, setChatId, setUserId, setGroupId, setTitle
+        messages, chatListing, chatId, title, userId, addToMessage, addToChatListing, setChatId, setUserId, setGroupId, setTitle, setMessages
     }
 
     return <ChatContext.Provider value={value}>
