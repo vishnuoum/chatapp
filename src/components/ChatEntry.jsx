@@ -2,7 +2,7 @@ import { useChatContext } from "../contexts/ChatContext";
 import "../css/ChatEntry.css"
 
 function ChatEntry({ chat }) {
-    const { setChatId, setTitle, setGroupId } = useChatContext();
+    const { setTitle, setActiveChat } = useChatContext();
 
     const getDate = (dateString) => {
         try {
@@ -49,14 +49,13 @@ function ChatEntry({ chat }) {
 
     const handleOnClick = () => {
         console.log("chatEntry " + JSON.stringify(chat));
-        setChatId(chat["chat_id"]);
         setTitle(chat.title);
         console.log(chat.title);
-        if (chat["type"] === "group") {
-            setGroupId(chat["chat_id"]);
-        } else {
-            setGroupId(null);
-        }
+        setActiveChat({
+            "chat_id": chat["chat_id"],
+            "type": chat["type"]
+        })
+
     }
 
     return (

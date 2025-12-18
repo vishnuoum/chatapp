@@ -7,9 +7,11 @@ const ChatContext = createContext();
 export const useChatContext = () => useContext(ChatContext);
 export const ChatProvider = ({ children }) => {
     const [messages, setMessages] = useState({});
-    const [chatId, setChatId] = useState(null);
+    const [activeChat, setActiveChat] = useState({
+        "chat_id": null,
+        "type": null
+    });
     const [title, setTitle] = useState(null);
-    const [groupId, setGroupId] = useState(null);
     const [chatListing, setChatListing] = useState([]);
     const [userId, setUserId] = useState(() => {
         // 👇 initialize state from storage
@@ -36,16 +38,18 @@ export const ChatProvider = ({ children }) => {
         if (!usernameMap[chat.chat_id]) {
             getUsername(chat.chat_id).then(
                 title => {
-                    console.log("title " + title)
-                    chat["title"] = title;
-                    setUsernameMap(prev => { return { ...prev, [chat.chat_id]: title } })
-                    setChatListing(prev => {
-                        const filtered = prev ? prev.filter(c => c.chat_id !== chat.chat_id) : [];
-                        console.log("chat " + JSON.stringify(chat));
-                        console.log("fitlered " + JSON.stringify(filtered));
-                        console.log([chat, ...filtered]);
-                        return [chat, ...filtered];
-                    });
+                    if (title) {
+                        console.log("title " + title)
+                        chat["title"] = title;
+                        setUsernameMap(prev => { return { ...prev, [chat.chat_id]: title } })
+                        setChatListing(prev => {
+                            const filtered = prev ? prev.filter(c => c.chat_id !== chat.chat_id) : [];
+                            console.log("chat " + JSON.stringify(chat));
+                            console.log("fitlered " + JSON.stringify(filtered));
+                            console.log([chat, ...filtered]);
+                            return [chat, ...filtered];
+                        });
+                    }
                 }
             )
         } else {
@@ -68,8 +72,8 @@ export const ChatProvider = ({ children }) => {
         // emit to server
         emitMessage(message, id);
 
-        addToChatListing({ chat_id: id, title: title, last_message: message.text, type: groupId ? "group" : "individual", last_datetime: message.datetime });
-    }, [addToChatListing, title, groupId]);
+        addToChatListing({ chat_id: id, title: title, last_message: message.text, type: activeChat.type, last_datetime: message.datetime });
+    }, [addToChatListing, title, activeChat]);
 
 
     const addReceivedMessage = useCallback((message, id) => {
@@ -188,9 +192,9 @@ export const ChatProvider = ({ children }) => {
 
         const payload = {
             sender_id: userId,
-            receiver_id: groupId ? null : id,
+            receiver_id: activeChat.type === "group" ? null : id,
             text: message?.text ?? message,
-            group_id: groupId ?? null
+            group_id: activeChat.type === "group" ? id : null
         };
 
 
@@ -198,7 +202,7 @@ export const ChatProvider = ({ children }) => {
     }
 
     const value = {
-        messages, chatListing, chatId, title, userId, addToMessage, addToChatListing, setChatId, setUserId, setGroupId, setTitle, setMessages
+        messages, chatListing, title, userId, activeChat, setActiveChat, addToMessage, addToChatListing, setUserId, setTitle, setMessages
     }
 
     return <ChatContext.Provider value={value}>
