@@ -13,9 +13,7 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         const result = await login({ phone: phone, password: password })
-        console.log(result)
         if (result && result.phone) {
-            console.log(result.phone)
             setUserId(result.phone)
             console.log("setting user Id completed")
             navigate('/', { replace: true })

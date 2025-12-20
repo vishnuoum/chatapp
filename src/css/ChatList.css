@@ -37,3 +37,17 @@
 .chat-entries {
     overflow-y: scroll;
 }
+
+.chat-button {
+    margin-right: 0px;
+    border-radius: 50px 0px 0px 50px;
+}
+
+.chat-button:hover {
+    margin-right: 0px;
+}
+
+.group-button {
+    border-radius: 0px 50px 50px 0px;
+    border-left: #212529 1px solid;
+}

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
-import { getUsername } from "../services/api";
+import { getGroupName, getUsername } from "../services/api";
 
 const ChatContext = createContext();
 
@@ -34,24 +34,37 @@ export const ChatProvider = ({ children }) => {
 
 
     const addToChatListing = useCallback((chat) => {
-
+        console.log("chat message to add", chat);
+        console.log("username map", usernameMap)
         if (!usernameMap[chat.chat_id]) {
-            getUsername(chat.chat_id).then(
-                title => {
-                    if (title) {
-                        console.log("title " + title)
-                        chat["title"] = title;
-                        setUsernameMap(prev => { return { ...prev, [chat.chat_id]: title } })
-                        setChatListing(prev => {
-                            const filtered = prev ? prev.filter(c => c.chat_id !== chat.chat_id) : [];
-                            console.log("chat " + JSON.stringify(chat));
-                            console.log("fitlered " + JSON.stringify(filtered));
-                            console.log([chat, ...filtered]);
-                            return [chat, ...filtered];
-                        });
+            if (chat.type === "group") {
+                getGroupName(chat.chat_id).then(
+                    title => {
+                        console.log("title", title)
+                        if (title) {
+                            chat["title"] = title;
+                            setUsernameMap(prev => { return { ...prev, [chat.chat_id]: title } })
+                            setChatListing(prev => {
+                                const filtered = prev ? prev.filter(c => c.chat_id !== chat.chat_id) : [];
+                                return [chat, ...filtered];
+                            });
+                        }
                     }
-                }
-            )
+                )
+            } else {
+                getUsername(chat.chat_id).then(
+                    title => {
+                        if (title) {
+                            chat["title"] = title;
+                            setUsernameMap(prev => { return { ...prev, [chat.chat_id]: title } })
+                            setChatListing(prev => {
+                                const filtered = prev ? prev.filter(c => c.chat_id !== chat.chat_id) : [];
+                                return [chat, ...filtered];
+                            });
+                        }
+                    }
+                )
+            }
         } else {
             setChatListing(prev => {
                 const temp = prev.map(item =>
@@ -78,6 +91,7 @@ export const ChatProvider = ({ children }) => {
 
     const addReceivedMessage = useCallback((message, id) => {
         setMessages(prev => {
+            console.log("chat Id", id)
             const prevForId = prev?.[id] ?? [];
             return { ...prev, [id]: [message, ...prevForId] };
         });
@@ -85,7 +99,7 @@ export const ChatProvider = ({ children }) => {
         addToChatListing({
             chat_id: id,
             last_message: message.text,
-            type: message.groupId ? "group" : "individual",
+            type: message.group_id ? "group" : "individual",
             last_datetime: message.datetime
         });
     }, [addToChatListing]);
@@ -107,7 +121,6 @@ export const ChatProvider = ({ children }) => {
             ))
 
             if (data) {
-                console.log(data)
                 setChatListing(data)
             }
         } catch (e) {
@@ -152,7 +165,7 @@ export const ChatProvider = ({ children }) => {
 
         const onReceive = (data) => {
             console.log("socket received:", data);
-            const sender = data.senderId ?? data.sender_id ?? data.from;
+            const sender = data.group_id ?? data.sender_id;
             addReceivedMessage(data, sender);
         };
 
@@ -160,11 +173,18 @@ export const ChatProvider = ({ children }) => {
             console.error("socket connect error:", err);
         };
 
+        const onGroupCreated = (data) => {
+            console.log("Group join request:", data);
+            setUsernameMap(prev => { return { ...prev, [data.group_id]: data.name } })
+            joinGroup(data.group_id)
+        }
+
         // register listeners
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
         socket.on("receive", onReceive);
         socket.on("connect_error", onConnectError);
+        socket.on("group_created", onGroupCreated);
 
         // now connect
         socket.connect();
@@ -201,8 +221,25 @@ export const ChatProvider = ({ children }) => {
         socket.emit("send", payload)
     }
 
+    const joinGroup = (groupId) => {
+        const socket = socketRef.current;
+        if (!socket || !socket.connected) {
+            console.warn("emitMessage: socket not connected");
+            return;
+        }
+
+        const payload = {
+            user_id: userId,
+            group_id: groupId
+        };
+
+        socket.emit("joinGroup", payload);
+
+        addToChatListing({ "chat_id": groupId, "last_message": "....", "last_datetime": new Date().toISOString(), "type": "group" })
+    }
+
     const value = {
-        messages, chatListing, title, userId, activeChat, setActiveChat, addToMessage, addToChatListing, setUserId, setTitle, setMessages
+        messages, chatListing, title, userId, activeChat, usernameMap, setActiveChat, addToMessage, addToChatListing, setUserId, setTitle, setMessages
     }
 
     return <ChatContext.Provider value={value}>

@@ -48,9 +48,7 @@ function ChatEntry({ chat }) {
 
 
     const handleOnClick = () => {
-        console.log("chatEntry " + JSON.stringify(chat));
         setTitle(chat.title);
-        console.log(chat.title);
         setActiveChat({
             "chat_id": chat["chat_id"],
             "type": chat["type"]

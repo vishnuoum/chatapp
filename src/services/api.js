@@ -50,6 +50,23 @@ export const getUsername = async (phone) => {
     }
 }
 
+export const getGroupName = async (group_id) => {
+    try {
+        const response = await fetch(`${BASE_URL}/getGroupName`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ group_id: group_id })
+        })
+        const resBody = await response.json()
+        return resBody["title"]
+    } catch (e) {
+        console.log("Error while getUsername")
+        console.error(e);
+    }
+}
+
 export const fetchHistory = async (user_id, chat_id, group_id) => {
     try {
         const response = await fetch(`${BASE_URL}/getMessages`, {
@@ -64,5 +81,22 @@ export const fetchHistory = async (user_id, chat_id, group_id) => {
     } catch (e) {
         console.log("Error while getUsername")
         return []
+    }
+}
+
+export const createGroup = async (members, userId, name) => {
+    try {
+        const response = await fetch(`${BASE_URL}/createGroup`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ user_id: userId, name: name, members: members })
+        })
+        const resBody = await response.json()
+        return resBody.group_id
+    } catch (e) {
+        console.log("Error while creating group")
+        return null;
     }
 }

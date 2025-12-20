@@ -16,7 +16,6 @@ function Signup() {
         const result = await signup({ username: username, phone: phone, password: password })
         console.log(result)
         if (result && result.phone) {
-            console.log(result.phone)
             setUserId(result.phone)
             console.log("setting user Id completed")
         } else {

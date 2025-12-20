@@ -20,7 +20,6 @@ function AppRoutes() {
 
 
 
-  console.log(userId);
   return (
     <main className='main-content'>
       <Routes>

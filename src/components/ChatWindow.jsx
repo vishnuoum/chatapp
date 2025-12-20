@@ -11,7 +11,7 @@ function ChatWindow() {
     const { messages, title, userId, addToMessage, setMessages, activeChat } = useChatContext();
 
     const sendMessage = (e) => {
-        console.log(textMessage);
+        console.log("Sending message", textMessage);
         (textMessage && textMessage.trim() !== "") && addToMessage({ "id": 1, "sender_id": userId, "datetime": new Date().toISOString(), "text": textMessage }, activeChat.chat_id)
         setTextMessage("")
     }
