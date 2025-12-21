@@ -100,3 +100,18 @@ export const createGroup = async (members, userId, name) => {
         return null;
     }
 }
+
+export const addMembersToGroup = async (members, groupId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/addMembersToGroup`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ group_id: groupId, members: members })
+        })
+    } catch (e) {
+        console.log("Error while adding new members to group")
+        alert("Error while adding new members to group")
+    }
+}

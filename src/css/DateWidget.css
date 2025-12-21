@@ -1,0 +1,10 @@
+.date-widget {
+    font-size: small;
+    background-color: rgb(70, 69, 69);
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.04);
+    align-self: center;
+    margin: 10px;
+}
